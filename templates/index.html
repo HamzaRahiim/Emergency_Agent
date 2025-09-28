@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Medical Agent - Karachi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .emergency-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .emergency-header {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            border-radius: 20px 20px 0 0;
+            padding: 20px;
+            text-align: center;
+        }
+        .priority-critical { border-left: 5px solid #e74c3c; }
+        .priority-high { border-left: 5px solid #f39c12; }
+        .priority-medium { border-left: 5px solid #f1c40f; }
+        .priority-low { border-left: 5px solid #2ecc71; }
+        .hospital-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #007bff;
+        }
+        .ambulance-card {
+            background: #fff3cd;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #ffc107;
+        }
+        .loading {
+            display: none;
+        }
+        .loading.show {
+            display: block;
+        }
+        .btn-emergency {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            border: none;
+            border-radius: 50px;
+            padding: 15px 30px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+        .btn-emergency:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(238, 90, 36, 0.3);
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-available { background-color: #28a745; }
+        .status-dispatched { background-color: #ffc107; }
+        .status-on-route { background-color: #17a2b8; }
+        .status-arrived { background-color: #007bff; }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="emergency-card">
+                    <div class="emergency-header">
+                        <h1><i class="fas fa-ambulance"></i> Emergency Medical Agent</h1>
+                        <p class="mb-0">AI-Powered Emergency Response for Karachi</p>
+                    </div>
+                    
+                    <div class="card-body p-4">
+                        <form id="emergencyForm">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label"><i class="fas fa-user-injured"></i> Emergency Type</label>
+                                        <select class="form-select" id="emergencyType" required>
+                                            <option value="">Select emergency type</option>
+                                            <option value="medical">Medical Emergency</option>
+                                            <option value="trauma">Trauma/Accident</option>
+                                            <option value="cardiac">Cardiac Emergency</option>
+                                            <option value="stroke">Stroke</option>
+                                            <option value="accident">Road Accident</option>
+                                            <option value="other">Other</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label"><i class="fas fa-exclamation-triangle"></i> Priority</label>
+                                        <select class="form-select" id="priority" required>
+                                            <option value="medium">Medium</option>
+                                            <option value="high">High</option>
+                                            <option value="critical">Critical</option>
+                                            <option value="low">Low</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label"><i class="fas fa-user"></i> Patient Name (Optional)</label>
+                                        <input type="text" class="form-control" id="patientName" placeholder="Enter patient name">
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label"><i class="fas fa-birthday-cake"></i> Patient Age (Optional)</label>
+                                        <input type="number" class="form-control" id="patientAge" placeholder="Enter age">
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label"><i class="fas fa-map-marker-alt"></i> Location</label>
+                                        <input type="text" class="form-control" id="address" placeholder="Enter address in Karachi" required>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="mb-3">
+                                                <label class="form-label"><i class="fas fa-globe"></i> Latitude</label>
+                                                <input type="number" class="form-control" id="latitude" step="any" placeholder="24.8607" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="mb-3">
+                                                <label class="form-label"><i class="fas fa-globe"></i> Longitude</label>
+                                                <input type="number" class="form-control" id="longitude" step="any" placeholder="67.0011" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label"><i class="fas fa-phone"></i> Contact Number (Optional)</label>
+                                        <input type="tel" class="form-control" id="contactNumber" placeholder="+92-XXX-XXXXXXX">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label"><i class="fas fa-comment-medical"></i> Emergency Description</label>
+                                <textarea class="form-control" id="description" rows="3" placeholder="Describe the emergency situation in detail..." required></textarea>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label"><i class="fas fa-info-circle"></i> Additional Information (Optional)</label>
+                                <textarea class="form-control" id="additionalInfo" rows="2" placeholder="Any additional relevant information..."></textarea>
+                            </div>
+                            
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-emergency text-white">
+                                    <i class="fas fa-bolt"></i> Request Emergency Assistance
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <div class="loading text-center mt-4">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Processing...</span>
+                            </div>
+                            <p class="mt-2">Processing emergency request...</p>
+                        </div>
+                        
+                        <div id="responseContainer" class="mt-4" style="display: none;">
+                            <!-- Response will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('emergencyForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const form = e.target;
+            const loading = document.querySelector('.loading');
+            const responseContainer = document.getElementById('responseContainer');
+            
+            // Show loading
+            loading.classList.add('show');
+            responseContainer.style.display = 'none';
+            
+            // Prepare request data
+            const requestData = {
+                emergency_type: document.getElementById('emergencyType').value,
+                description: document.getElementById('description').value,
+                location: {
+                    latitude: parseFloat(document.getElementById('latitude').value),
+                    longitude: parseFloat(document.getElementById('longitude').value),
+                    address: document.getElementById('address').value
+                },
+                patient_name: document.getElementById('patientName').value || null,
+                patient_age: document.getElementById('patientAge').value ? parseInt(document.getElementById('patientAge').value) : null,
+                contact_number: document.getElementById('contactNumber').value || null,
+                priority: document.getElementById('priority').value,
+                additional_info: document.getElementById('additionalInfo').value || null
+            };
+            
+            try {
+                const response = await fetch('/emergency/medical', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestData)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                displayResponse(result);
+                
+            } catch (error) {
+                console.error('Error:', error);
+                responseContainer.innerHTML = `
+                    <div class="alert alert-danger">
+                        <h5><i class="fas fa-exclamation-triangle"></i> Error</h5>
+                        <p>Failed to process emergency request: ${error.message}</p>
+                    </div>
+                `;
+                responseContainer.style.display = 'block';
+            } finally {
+                loading.classList.remove('show');
+            }
+        });
+        
+        function displayResponse(response) {
+            const container = document.getElementById('responseContainer');
+            const priorityClass = `priority-${response.priority}`;
+            
+            let html = `
+                <div class="card ${priorityClass}">
+                    <div class="card-header bg-primary text-white">
+                        <h5><i class="fas fa-check-circle"></i> Emergency Response Generated</h5>
+                        <small>Request ID: ${response.request_id}</small>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6><i class="fas fa-tasks"></i> Actions Taken:</h6>
+                                <ul class="list-unstyled">
+                                    ${response.actions_taken.map(action => `<li><i class="fas fa-check text-success"></i> ${action}</li>`).join('')}
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h6><i class="fas fa-robot"></i> AI Analysis:</h6>
+                                <p class="text-muted">${response.ai_analysis || 'Analysis completed'}</p>
+                            </div>
+                        </div>
+            `;
+            
+            // Show dispatched ambulance
+            if (response.dispatched_ambulance) {
+                const ambulance = response.dispatched_ambulance;
+                html += `
+                    <div class="ambulance-card">
+                        <h6><i class="fas fa-ambulance"></i> Dispatched Ambulance</h6>
+                        <p><strong>ID:</strong> ${ambulance.ambulance_id}</p>
+                        <p><strong>Driver:</strong> ${ambulance.driver_name}</p>
+                        <p><strong>Contact:</strong> ${ambulance.contact_number}</p>
+                        <p><strong>Speciality:</strong> ${ambulance.speciality}</p>
+                        <p><strong>ETA:</strong> ${ambulance.eta_minutes} minutes</p>
+                        <p><strong>Status:</strong> 
+                            <span class="status-indicator status-${ambulance.status}"></span>
+                            ${ambulance.status.toUpperCase()}
+                        </p>
+                    </div>
+                `;
+            }
+            
+            // Show booked appointment
+            if (response.booked_appointment) {
+                const appointment = response.booked_appointment;
+                html += `
+                    <div class="hospital-card">
+                        <h6><i class="fas fa-calendar-check"></i> Booked Appointment</h6>
+                        <p><strong>Hospital:</strong> ${appointment.hospital_name}</p>
+                        <p><strong>Doctor:</strong> ${appointment.doctor_name || 'TBD'}</p>
+                        <p><strong>Speciality:</strong> ${appointment.speciality || 'General'}</p>
+                        <p><strong>Time:</strong> ${new Date(appointment.appointment_time).toLocaleString()}</p>
+                        <p><strong>Status:</strong> ${appointment.status}</p>
+                    </div>
+                `;
+            }
+            
+            // Show nearby hospitals
+            if (response.nearby_hospitals && response.nearby_hospitals.length > 0) {
+                html += `
+                    <h6><i class="fas fa-hospital"></i> Nearby Hospitals:</h6>
+                    ${response.nearby_hospitals.map(hospital => `
+                        <div class="hospital-card">
+                            <h6>${hospital.name}</h6>
+                            <p><strong>Address:</strong> ${hospital.address}</p>
+                            <p><strong>Distance:</strong> ${hospital.distance_km ? hospital.distance_km + ' km' : 'Unknown'}</p>
+                            <p><strong>Contact:</strong> ${hospital.telephone_numbers.length > 0 ? hospital.telephone_numbers[0] : 'Contact through emergency services'}</p>
+                            ${hospital.speciality ? `<p><strong>Speciality:</strong> ${hospital.speciality}</p>` : ''}
+                        </div>
+                    `).join('')}
+                `;
+            }
+            
+            // Show recommendations
+            if (response.recommendations && response.recommendations.length > 0) {
+                html += `
+                    <h6><i class="fas fa-lightbulb"></i> Immediate Recommendations:</h6>
+                    <ul>
+                        ${response.recommendations.map(rec => `<li>${rec}</li>`).join('')}
+                    </ul>
+                `;
+            }
+            
+            // Show follow-up instructions
+            if (response.follow_up_instructions && response.follow_up_instructions.length > 0) {
+                html += `
+                    <h6><i class="fas fa-arrow-right"></i> Follow-up Instructions:</h6>
+                    <ul>
+                        ${response.follow_up_instructions.map(inst => `<li>${inst}</li>`).join('')}
+                    </ul>
+                `;
+            }
+            
+            html += `
+                    </div>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+            container.style.display = 'block';
+        }
+        
+        // Set default Karachi coordinates
+        document.getElementById('latitude').value = '24.8607';
+        document.getElementById('longitude').value = '67.0011';
+    </script>
+</body>
+</html>
+

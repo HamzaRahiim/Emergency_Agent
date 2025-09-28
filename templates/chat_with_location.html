@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Medical Chat - Karachi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .chat-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            height: 85vh;
+            max-height: 900px;
+        }
+        .chat-header {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            border-radius: 20px 20px 0 0;
+            padding: 20px;
+            text-align: center;
+        }
+        .chat-messages {
+            height: calc(100% - 160px);
+            overflow-y: auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        .chat-input {
+            padding: 20px;
+            border-top: 1px solid #dee2e6;
+            background: white;
+            border-radius: 0 0 20px 20px;
+        }
+        .message {
+            margin-bottom: 15px;
+            animation: fadeIn 0.3s ease-in;
+        }
+        .message.user {
+            text-align: right;
+        }
+        .message.system {
+            text-align: left;
+        }
+        .message-bubble {
+            display: inline-block;
+            max-width: 70%;
+            padding: 12px 18px;
+            border-radius: 18px;
+            word-wrap: break-word;
+        }
+        .message.user .message-bubble {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+        }
+        .message.system .message-bubble {
+            background: white;
+            color: #333;
+            border: 1px solid #dee2e6;
+        }
+        .message.emergency .message-bubble {
+            background: linear-gradient(45deg, #dc3545, #c82333);
+            color: white;
+        }
+        .message.confirmation .message-bubble {
+            background: linear-gradient(45deg, #ffc107, #fd7e14);
+            color: #212529;
+        }
+        .typing-indicator {
+            display: none;
+            padding: 10px;
+            color: #6c757d;
+            font-style: italic;
+        }
+        .typing-indicator.show {
+            display: block;
+        }
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        .quick-action-btn {
+            background: #e9ecef;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        .quick-action-btn:hover {
+            background: #007bff;
+            color: white;
+        }
+        .location-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .location-popup.show {
+            display: flex;
+        }
+        .location-popup-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        .location-popup h3 {
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+        .location-popup p {
+            color: #6c757d;
+            margin-bottom: 25px;
+        }
+        .location-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .location-btn {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+        .location-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        }
+        .location-btn.deny {
+            background: linear-gradient(45deg, #dc3545, #c82333);
+        }
+        .manual-location-input {
+            display: none;
+            margin-top: 20px;
+        }
+        .manual-location-input.show {
+            display: block;
+        }
+        .phone-input {
+            display: none;
+            margin-top: 20px;
+        }
+        .phone-input.show {
+            display: block;
+        }
+        .emergency-warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            color: #856404;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-available { background-color: #28a745; }
+        .status-denied { background-color: #dc3545; }
+        .status-pending { background-color: #ffc107; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .welcome-message {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6c757d;
+        }
+        .welcome-message h4 {
+            color: #007bff;
+            margin-bottom: 15px;
+        }
+        .emergency-info {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container py-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <h3><i class="fas fa-ambulance"></i> Emergency Medical Chat</h3>
+                        <p class="mb-0">AI-Powered Emergency Response for Karachi</p>
+                        <div class="mt-2">
+                            <span class="status-indicator" id="locationStatus"></span>
+                            <small id="locationStatusText">Location: Pending</small>
+                            <span class="status-indicator ms-3" id="phoneStatus"></span>
+                            <small id="phoneStatusText">Phone: Not Required</small>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="welcome-message">
+                            <h4><i class="fas fa-comments"></i> Welcome to Emergency Medical Chat</h4>
+                            <p>I'm here to help you with any medical emergency in Karachi.</p>
+                            <p>Just type your message below, and I'll handle everything for you!</p>
+                            
+                            <div class="emergency-info">
+                                <h6><i class="fas fa-info-circle"></i> How it works:</h6>
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-check text-success"></i> Describe your emergency</li>
+                                    <li><i class="fas fa-check text-success"></i> I'll find nearby hospitals</li>
+                                    <li><i class="fas fa-check text-success"></i> Dispatch ambulance if needed</li>
+                                    <li><i class="fas fa-check text-success"></i> Book appointments for follow-up</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="quick-actions">
+                                <button class="quick-action-btn" onclick="sendQuickMessage('I have chest pain and breathing difficulty')">
+                                    <i class="fas fa-heart"></i> Chest Pain
+                                </button>
+                                <button class="quick-action-btn" onclick="sendQuickMessage('I was in a car accident')">
+                                    <i class="fas fa-car-crash"></i> Car Accident
+                                </button>
+                                <button class="quick-action-btn" onclick="sendQuickMessage('I need hospital information')">
+                                    <i class="fas fa-hospital"></i> Hospital Info
+                                </button>
+                                <button class="quick-action-btn" onclick="sendQuickMessage('Emergency! Please help!')">
+                                    <i class="fas fa-sos"></i> Emergency
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="typing-indicator" id="typingIndicator">
+                        <i class="fas fa-circle-notch fa-spin"></i> Emergency system is processing...
+                    </div>
+                    
+                    <div class="chat-input">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="messageInput" 
+                                   placeholder="Describe your emergency or request information..."
+                                   onkeypress="handleKeyPress(event)">
+                            <button class="btn btn-primary" onclick="sendMessage()" id="sendButton">
+                                <i class="fas fa-paper-plane"></i> Send
+                            </button>
+                        </div>
+                        <small class="text-muted">Location will be requested automatically when needed</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let sessionId = null;
+        let userLocation = null;
+        let phoneVerified = false;
+        let locationProvided = false;
+        let currentConfirmation = null;
+        let isEmergency = false;
+
+        // Initialize chat
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize session
+            sessionId = generateSessionId();
+            
+            // Request location permission immediately using browser's native dialog
+            requestLocationPermission();
+        });
+
+        function generateSessionId() {
+            return 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        async function requestLocationPermission() {
+            if (navigator.geolocation) {
+                // Use browser's native location permission dialog
+                navigator.geolocation.getCurrentPosition(
+                    async function(position) {
+                        const latitude = position.coords.latitude;
+                        const longitude = position.coords.longitude;
+                        const accuracy = position.coords.accuracy;
+                        
+                        // Set location via API
+                        const response = await fetch('/location/set', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                session_id: sessionId,
+                                latitude: latitude,
+                                longitude: longitude,
+                                accuracy: accuracy
+                            })
+                        });
+                        
+                        if (response.ok) {
+                            userLocation = { latitude, longitude, accuracy };
+                            locationProvided = true;
+                            updateLocationStatus('available', 'Location: GPS');
+                            addMessage('📍 GPS location received! I can now provide accurate emergency services.', 'system');
+                        } else {
+                            addMessage('❌ Failed to set GPS location. Please provide your location manually.', 'system');
+                            showLocationPrompt();
+                        }
+                    },
+                    function(error) {
+                        console.error('Location error:', error);
+                        addMessage('📍 Location access denied or unavailable. Please provide your location manually.', 'system');
+                        showLocationPrompt();
+                    }
+                );
+            } else {
+                addMessage('📍 Location services not available. Please provide your location manually.', 'system');
+                showLocationPrompt();
+            }
+        }
+
+        function showLocationPrompt() {
+            addMessage('📍 Please provide your location manually. Type your area in Karachi (e.g., "Saddar", "Clifton", "Defence").', 'system');
+        }
+
+        function isLocationInput(message) {
+            const karachiAreas = [
+                'saddar', 'clifton', 'defence', 'gulshan', 'north nazimabad', 
+                'federal b area', 'pecs', 'gulberg', 'malir', 'korangi', 
+                'landhi', 'orangi', 'johar', 'gulistan', 'airport', 'baldia', 'lyari'
+            ];
+            
+            const messageLower = message.toLowerCase();
+            return karachiAreas.some(area => messageLower.includes(area)) || 
+                   messageLower.includes('karachi') ||
+                   messageLower.includes('area') ||
+                   messageLower.includes('location');
+        }
+
+        function isPhoneNumber(message) {
+            // Pakistani phone number patterns
+            const phonePatterns = [
+                /^\+92[-\s]?\d{3}[-\s]?\d{7}$/,  // +92-300-1234567
+                /^0\d{3}[-\s]?\d{7}$/,           // 0300-1234567
+                /^\d{4}[-\s]?\d{7}$/             // 300-1234567
+            ];
+            
+            return phonePatterns.some(pattern => pattern.test(message.replace(/\s/g, '')));
+        }
+
+        async function handlePhoneInput(message) {
+            // Add user message
+            addMessage(message, 'user');
+            
+            // Show typing indicator
+            showTypingIndicator();
+            
+            try {
+                const success = await verifyPhoneNumber(message.replace(/\s/g, ''));
+                hideTypingIndicator();
+                
+                if (success) {
+                    // Continue with emergency processing
+                    await processEmergencyMessage();
+                }
+            } catch (error) {
+                hideTypingIndicator();
+                addMessage('❌ Error verifying phone number. Please try again.', 'system');
+            }
+        }
+
+        async function processEmergencyMessage() {
+            // This will be called after phone verification for emergencies
+            // The system will process the emergency with all requirements met
+            addMessage('🚨 Emergency requirements met! Processing your emergency request...', 'system');
+        }
+
+        async function handleManualLocationInput(message) {
+            // Add user message
+            addMessage(message, 'user');
+            
+            // Show typing indicator
+            showTypingIndicator();
+            
+            try {
+                // Set location via API
+                const response = await fetch('/location/set', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        session_id: sessionId,
+                        address: message
+                    })
+                });
+
+                if (response.ok) {
+                    locationProvided = true;
+                    updateLocationStatus('available', `Location: ${message}`);
+                    hideTypingIndicator();
+                    addMessage(`📍 Location set to: ${message}. I can now provide emergency services for this area.`, 'system');
+                } else {
+                    hideTypingIndicator();
+                    addMessage('❌ Failed to set location. Please try again with a clearer area name.', 'system');
+                }
+            } catch (error) {
+                hideTypingIndicator();
+                addMessage('❌ Error setting location. Please try again.', 'system');
+            }
+        }
+
+
+
+        function updateLocationStatus(status, text) {
+            const statusElement = document.getElementById('locationStatus');
+            const textElement = document.getElementById('locationStatusText');
+            
+            statusElement.className = `status-indicator status-${status}`;
+            textElement.textContent = text;
+        }
+
+        function updatePhoneStatus(status, text) {
+            const statusElement = document.getElementById('phoneStatus');
+            const textElement = document.getElementById('phoneStatusText');
+            
+            statusElement.className = `status-indicator status-${status}`;
+            textElement.textContent = text;
+        }
+
+        async function verifyPhoneNumber(phoneNumber) {
+            const response = await fetch('/phone/verify', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    session_id: sessionId,
+                    phone_number: phoneNumber,
+                    country_code: '+92'
+                })
+            });
+
+            if (response.ok) {
+                phoneVerified = true;
+                updatePhoneStatus('available', `Phone: +92${phoneNumber}`);
+                addMessage(`📞 Phone number verified: +92${phoneNumber}. Emergency services can now contact you if needed.`, 'system');
+                return true;
+            } else {
+                addMessage('❌ Failed to verify phone number. Please try again.', 'system');
+                return false;
+            }
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function sendQuickMessage(message) {
+            if (!locationProvided) {
+                alert('Please provide your location first.');
+                return;
+            }
+            document.getElementById('messageInput').value = message;
+            sendMessage();
+        }
+
+        async function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value.trim();
+            
+            if (!message) return;
+            
+            // Check if this is a manual location input
+            if (!locationProvided && isLocationInput(message)) {
+                await handleManualLocationInput(message);
+                messageInput.value = '';
+                return;
+            }
+            
+            // Check if this is a phone number input for emergency
+            if (isEmergency && !phoneVerified && isPhoneNumber(message)) {
+                await handlePhoneInput(message);
+                messageInput.value = '';
+                return;
+            }
+            
+            if (!locationProvided) {
+                addMessage('📍 Please provide your location first. Type your area in Karachi (e.g., "Saddar", "Clifton").', 'system');
+                return;
+            }
+            
+            // Clear input and add user message
+            messageInput.value = '';
+            addMessage(message, 'user');
+            
+            // Check if it's an emergency
+            isEmergency = checkIfEmergency(message);
+            
+            // Show typing indicator
+            showTypingIndicator();
+            
+            try {
+                const response = await fetch('/chat/process', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        session_id: sessionId
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                // Hide typing indicator
+                hideTypingIndicator();
+                
+                // Add system response
+                addMessage(result.content, result.type);
+                
+                // Check if phone is required for emergency
+                if (isEmergency && !phoneVerified && result.needs_confirmation) {
+                    addMessage('📞 Phone number required for emergency contact. Please provide your phone number (e.g., 0300-1234567).', 'system');
+                    updatePhoneStatus('pending', 'Phone: Required for Emergency');
+                }
+                
+                // Handle confirmation if needed
+                if (result.needs_confirmation) {
+                    currentConfirmation = result.message_id;
+                    addConfirmationButtons();
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                hideTypingIndicator();
+                addMessage('Sorry, I encountered an error. Please try again or contact emergency services directly.', 'system');
+            }
+        }
+
+        function checkIfEmergency(message) {
+            const emergencyKeywords = [
+                'emergency', 'urgent', 'critical', 'help', 'accident', 'injury',
+                'pain', 'unconscious', 'bleeding', 'chest pain', 'heart attack',
+                'stroke', 'breathing', 'asap', 'immediately', 'dying', 'serious'
+            ];
+            
+            const messageLower = message.toLowerCase();
+            return emergencyKeywords.some(keyword => messageLower.includes(keyword));
+        }
+
+        function addMessage(content, type) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            
+            const bubbleDiv = document.createElement('div');
+            bubbleDiv.className = 'message-bubble';
+            bubbleDiv.innerHTML = formatMessage(content);
+            
+            messageDiv.appendChild(bubbleDiv);
+            chatMessages.appendChild(messageDiv);
+            
+            // Scroll to bottom
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function formatMessage(content) {
+            return content
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/\n/g, '<br>')
+                .replace(/(\d+)\./g, '$1. ');
+        }
+
+        function addConfirmationButtons() {
+            const chatMessages = document.getElementById('chatMessages');
+            const buttonDiv = document.createElement('div');
+            buttonDiv.className = 'message confirmation';
+            buttonDiv.innerHTML = `
+                <div class="message-bubble">
+                    <div class="quick-actions">
+                        <button class="btn btn-success" onclick="confirmEmergency(true)">
+                            <i class="fas fa-check"></i> Yes, Proceed
+                        </button>
+                        <button class="btn btn-secondary" onclick="confirmEmergency(false)">
+                            <i class="fas fa-times"></i> No, Cancel
+                        </button>
+                    </div>
+                </div>
+            `;
+            chatMessages.appendChild(buttonDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        async function confirmEmergency(confirmed) {
+            if (!currentConfirmation) return;
+            
+            // Remove confirmation buttons
+            const confirmationDiv = document.querySelector('.message.confirmation');
+            if (confirmationDiv) {
+                confirmationDiv.remove();
+            }
+            
+            showTypingIndicator();
+            
+            try {
+                const response = await fetch('/chat/confirm', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message_id: currentConfirmation,
+                        confirmed: confirmed,
+                        additional_info: null
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                hideTypingIndicator();
+                
+                if (confirmed) {
+                    addMessage(result.content, result.type);
+                } else {
+                    addMessage('No problem! Please let me know if you need any emergency assistance in the future. Stay safe!', 'system');
+                }
+                
+                currentConfirmation = null;
+                
+            } catch (error) {
+                console.error('Error:', error);
+                hideTypingIndicator();
+                addMessage('Sorry, I encountered an error processing your confirmation.', 'system');
+                currentConfirmation = null;
+            }
+        }
+
+        function showTypingIndicator() {
+            document.getElementById('typingIndicator').classList.add('show');
+        }
+
+        function hideTypingIndicator() {
+            document.getElementById('typingIndicator').classList.remove('show');
+        }
+    </script>
+</body>
+</html>

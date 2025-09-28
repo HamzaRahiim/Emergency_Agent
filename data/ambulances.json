@@ -1,0 +1,106 @@
+{
+  "AMB_001": {
+    "ambulance_id": "AMB_001",
+    "driver_name": "Ali Ahmed",
+    "contact_number": "+92-300-1234567",
+    "location": {
+      "latitude": 24.8607,
+      "longitude": 67.0011,
+      "address": "Saddar, Karachi"
+    },
+    "status": "dispatched",
+    "eta_minutes": 9,
+    "speciality": "pediatric"
+  },
+  "AMB_002": {
+    "ambulance_id": "AMB_002",
+    "driver_name": "Mohammad Hassan",
+    "contact_number": "+92-301-2345678",
+    "location": {
+      "latitude": 24.8918,
+      "longitude": 67.0281,
+      "address": "Gulshan-e-Iqbal, Karachi"
+    },
+    "status": "dispatched",
+    "eta_minutes": 16,
+    "speciality": "trauma"
+  },
+  "AMB_003": {
+    "ambulance_id": "AMB_003",
+    "driver_name": "Usman Khan",
+    "contact_number": "+92-302-3456789",
+    "location": {
+      "latitude": 24.9056,
+      "longitude": 67.0822,
+      "address": "North Nazimabad, Karachi"
+    },
+    "status": "dispatched",
+    "eta_minutes": 10,
+    "speciality": "trauma"
+  },
+  "AMB_004": {
+    "ambulance_id": "AMB_004",
+    "driver_name": "Ahmed Ali",
+    "contact_number": "+92-303-4567890",
+    "location": {
+      "latitude": 24.9142,
+      "longitude": 67.081,
+      "address": "Federal B Area, Karachi"
+    },
+    "status": "dispatched",
+    "eta_minutes": 6,
+    "speciality": "trauma"
+  },
+  "AMB_005": {
+    "ambulance_id": "AMB_005",
+    "driver_name": "Hassan Sheikh",
+    "contact_number": "+92-304-5678901",
+    "location": {
+      "latitude": 24.8428,
+      "longitude": 67.0042,
+      "address": "Clifton, Karachi"
+    },
+    "status": "dispatched",
+    "eta_minutes": 12,
+    "speciality": "cardiac"
+  },
+  "AMB_006": {
+    "ambulance_id": "AMB_006",
+    "driver_name": "Khalid Malik",
+    "contact_number": "+92-305-6789012",
+    "location": {
+      "latitude": 24.8738,
+      "longitude": 67.0378,
+      "address": "PECHS, Karachi"
+    },
+    "status": "dispatched",
+    "eta_minutes": 11,
+    "speciality": "trauma"
+  },
+  "AMB_007": {
+    "ambulance_id": "AMB_007",
+    "driver_name": "Omar Khan",
+    "contact_number": "+92-306-7890123",
+    "location": {
+      "latitude": 24.892,
+      "longitude": 67.029,
+      "address": "Defence, Karachi"
+    },
+    "status": "dispatched",
+    "eta_minutes": 7,
+    "speciality": "trauma"
+  },
+  "AMB_008": {
+    "ambulance_id": "AMB_008",
+    "driver_name": "Yusuf Ahmed",
+    "contact_number": "+92-307-8901234",
+    "location": {
+      "latitude": 24.9167,
+      "longitude": 67.0667,
+      "address": "Gulberg, Karachi"
+    },
+    "status": "dispatched",
+    "eta_minutes": 14,
+    "speciality": "cardiac"
+  }
+}
