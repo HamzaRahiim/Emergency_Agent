@@ -57,6 +57,27 @@ async def read_root(request: Request):
     """Serve the simple professional chat interface (main page)"""
     return templates.TemplateResponse("simple_chat.html", {"request": request})
 
+@app.get("/status")
+async def status_check():
+    """Simple status endpoint for Railway health checks"""
+    return {"status": "ok", "message": "Emergency Agent System is running"}
+
+@app.get("/health")
+async def health_check():
+    """Health check endpoint for Railway deployment"""
+    return {
+        "status": "healthy",
+        "service": "Emergency Agent System",
+        "version": "1.0.0",
+        "timestamp": datetime.now().isoformat(),
+        "agents": {
+            "medical": "operational",
+            "fire": "operational", 
+            "police": "operational",
+            "multi_agent": "operational"
+        }
+    }
+
 @app.get("/form", response_class=HTMLResponse)
 async def read_form(request: Request):
     """Serve the form-based interface"""
