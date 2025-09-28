@@ -1,6 +1,5 @@
 from fastapi import FastAPI, HTTPException, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 import os
 from datetime import datetime
 from typing import Optional
@@ -36,8 +35,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Mount static files
-app.mount("/static", StaticFiles(directory="static"), name="static")
+# Static files are handled by React frontend - no need to mount
 
 # Initialize coordinators
 medical_coordinator = MedicalCoordinator()
