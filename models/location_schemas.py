@@ -57,3 +57,4 @@ class EmergencyRequirements(BaseModel):
     phone_provided: bool = Field(False, description="Whether phone is provided")
     can_proceed: bool = Field(False, description="Whether emergency can proceed")
     missing_requirements: List[str] = Field(default_factory=list, description="Missing requirements")
+

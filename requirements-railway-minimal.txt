@@ -1,0 +1,32 @@
+# Minimal Railway requirements to avoid build issues
+# This file uses only essential dependencies with pre-built wheels
+
+# Core FastAPI - using versions with pre-built wheels
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+pydantic==2.5.0
+
+# Google AI
+google-generativeai>=0.8.0
+
+# Essential web dependencies
+python-multipart==0.0.6
+jinja2==3.1.2
+
+# Environment
+python-dotenv==1.0.0
+
+# HTTP client
+httpx==0.25.2
+
+# Location services
+geopy==2.4.1
+
+# Railway deployment
+gunicorn==21.2.0
+
+# Note: Removed problematic dependencies that cause build issues:
+# - python-jose[cryptography] (causes compilation issues)
+# - passlib[bcrypt] (causes compilation issues)
+# - pydantic-core (let it use the version that comes with pydantic)
+

@@ -1,0 +1,27 @@
+# Railway-optimized requirements for Emergency Agent System
+# This file uses pre-built wheels to avoid compilation issues
+
+# Core FastAPI dependencies - using pre-built wheels
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+pydantic==2.5.0
+
+# Google AI dependencies
+google-generativeai>=0.8.0
+
+# Web framework dependencies
+python-multipart==0.0.6
+jinja2==3.1.2
+
+# Environment and utilities
+python-dotenv==1.0.0
+httpx==0.25.2
+geopy==2.4.1
+
+# Railway deployment dependencies
+gunicorn==21.2.0
+
+# Skip problematic dependencies for Railway
+# python-jose[cryptography]==3.3.0  # Can cause build issues
+# passlib[bcrypt]==1.7.4            # Can cause build issues
+
