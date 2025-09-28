@@ -1,8 +1,8 @@
 [build]
-builder = "NIXPACKS"
+builder = "dockerfile"
 
 [deploy]
-startCommand = "python start_railway.py"
+startCommand = "python main.py"
 healthcheckPath = "/status"
 healthcheckTimeout = 60
 restartPolicyType = "ON_FAILURE"
