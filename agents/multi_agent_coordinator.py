@@ -246,7 +246,7 @@ class MultiAgentCoordinator:
             return ChatResponse(
                 message_id=str(uuid.uuid4()),
                 type=MessageType.SYSTEM,
-                content=f"❌ **Emergency Service Error**: {str(e)}\n\nPlease try again or contact emergency services directly.",
+                content=f"[ERROR] **Emergency Service Error**: {str(e)}\n\nPlease try again or contact emergency services directly.",
                 needs_confirmation=False,
                 timestamp=datetime.now()
             )
@@ -344,7 +344,7 @@ class MultiAgentCoordinator:
             
             # Add coordination note
             coordinated_content += "---\n"
-            coordinated_content += "✅ **All emergency services have been coordinated and dispatched.**\n"
+            coordinated_content += "[OK] **All emergency services have been coordinated and dispatched.**\n"
             coordinated_content += "📞 **Stay on the line for updates and follow instructions from emergency responders.**"
             
             return ChatResponse(
@@ -363,7 +363,7 @@ class MultiAgentCoordinator:
                 return ChatResponse(
                     message_id=str(uuid.uuid4()),
                     type=MessageType.SYSTEM,
-                    content="❌ **Emergency Service Coordination Error**\n\nPlease contact emergency services directly.",
+                    content="[ERROR] **Emergency Service Coordination Error**\n\nPlease contact emergency services directly.",
                     needs_confirmation=False,
                     timestamp=datetime.now()
                 )

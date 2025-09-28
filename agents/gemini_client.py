@@ -31,10 +31,10 @@ class GeminiClient:
                 self.model = genai.GenerativeModel(model_name)
                 # Test the model with a simple request
                 test_response = self.model.generate_content("test")
-                print(f"✅ Using model: {model_name}")
+                print(f"[OK] Using model: {model_name}")
                 break
             except Exception as e:
-                print(f"❌ Model {model_name} failed: {str(e)[:100]}...")
+                print(f"[ERROR] Model {model_name} failed: {str(e)[:100]}...")
                 continue
         
         if not self.model:

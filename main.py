@@ -1,9 +1,6 @@
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
-from fastapi import Request
 import os
 from datetime import datetime
 from typing import Optional
@@ -39,9 +36,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Mount static files and templates
+# Mount static files
 app.mount("/static", StaticFiles(directory="static"), name="static")
-templates = Jinja2Templates(directory="templates")
 
 # Initialize coordinators
 medical_coordinator = MedicalCoordinator()
@@ -52,10 +48,10 @@ fire_emergency_coordinator = FireEmergencyCoordinator()
 police_emergency_coordinator = PoliceEmergencyCoordinator()
 multi_agent_coordinator = MultiAgentCoordinator()
 
-@app.get("/", response_class=HTMLResponse)
-async def read_root(request: Request):
-    """Serve the simple professional chat interface (main page)"""
-    return templates.TemplateResponse("simple_chat.html", {"request": request})
+@app.get("/")
+async def read_root():
+    """API root endpoint - Frontend is served separately"""
+    return {"message": "Emergency Agent System API", "status": "running", "frontend": "React app running on port 3000"}
 
 @app.get("/status")
 async def status_check():
@@ -78,25 +74,7 @@ async def health_check():
         }
     }
 
-@app.get("/form", response_class=HTMLResponse)
-async def read_form(request: Request):
-    """Serve the form-based interface"""
-    return templates.TemplateResponse("index.html", {"request": request})
-
-@app.get("/fire", response_class=HTMLResponse)
-async def read_fire_emergency(request: Request):
-    """Serve the Fire & Emergency Services interface"""
-    return templates.TemplateResponse("fire_emergency_chat.html", {"request": request})
-
-@app.get("/police", response_class=HTMLResponse)
-async def read_police_emergency(request: Request):
-    """Serve the Police Emergency Services interface"""
-    return templates.TemplateResponse("police_emergency_chat.html", {"request": request})
-
-@app.get("/hub", response_class=HTMLResponse)
-async def read_multi_agent_hub(request: Request):
-    """Serve the Multi-Agent Emergency Services Hub interface"""
-    return templates.TemplateResponse("multi_agent_chat.html", {"request": request})
+# Template routes removed - Frontend is now served by React app on port 3000
 
 @app.post("/emergency/medical", response_model=EmergencyResponse)
 async def handle_medical_emergency(request: EmergencyRequest):

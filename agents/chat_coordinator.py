@@ -66,7 +66,7 @@ class ChatCoordinator:
             return ChatResponse(
                 message_id=str(uuid.uuid4()),
                 type=MessageType.SYSTEM,
-                content="❌ Location data is incomplete. Please provide either GPS coordinates or address.",
+                content="[ERROR] Location data is incomplete. Please provide either GPS coordinates or address.",
                 timestamp=datetime.now()
             )
         
@@ -84,7 +84,7 @@ class ChatCoordinator:
             return ChatResponse(
                 message_id=str(uuid.uuid4()),
                 type=MessageType.SYSTEM,
-                content="❌ Session not found. Please start a new emergency request.",
+                content="[ERROR] Session not found. Please start a new emergency request.",
                 timestamp=datetime.now()
             )
         
@@ -94,7 +94,7 @@ class ChatCoordinator:
         if success:
             message = f"📞 Phone number verified: {country_code}{phone_number}. Emergency services can now contact you if needed."
         else:
-            message = "❌ Failed to verify phone number. Please try again."
+            message = "[ERROR] Failed to verify phone number. Please try again."
         
         return ChatResponse(
             message_id=str(uuid.uuid4()),
@@ -198,7 +198,7 @@ class ChatCoordinator:
             return ChatResponse(
                 message_id=str(uuid.uuid4()),
                 type=MessageType.SYSTEM,
-                content="❌ Session or location data not found. Please provide location first.",
+                content="[ERROR] Session or location data not found. Please provide location first.",
                 timestamp=datetime.now()
             )
         
@@ -219,7 +219,7 @@ class ChatCoordinator:
             return ChatResponse(
                 message_id=str(uuid.uuid4()),
                 type=MessageType.SYSTEM,
-                content="❌ Location data not found. Please provide location first.",
+                content="[ERROR] Location data not found. Please provide location first.",
                 timestamp=datetime.now()
             )
         
@@ -419,7 +419,7 @@ class ChatCoordinator:
         
         # Actions taken
         if emergency_response.actions_taken:
-            response_parts.append("✅ **Actions Taken:**")
+            response_parts.append("[OK] **Actions Taken:**")
             for action in emergency_response.actions_taken:
                 response_parts.append(f"   • {action}")
             response_parts.append("")

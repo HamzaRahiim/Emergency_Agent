@@ -381,7 +381,7 @@ class ProfessionalEmergencyCoordinator:
         return ChatResponse(
             message_id=str(uuid.uuid4()),
             type=MessageType.SYSTEM,
-            content=f"✅ Location set to: {message}\n\nI can now provide you with relevant medical information for this area. What medical assistance do you need?",
+            content=f"[OK] Location set to: {message}\n\nI can now provide you with relevant medical information for this area. What medical assistance do you need?",
             timestamp=datetime.now()
         )
     
@@ -395,7 +395,7 @@ class ProfessionalEmergencyCoordinator:
             return ChatResponse(
                 message_id=str(uuid.uuid4()),
                 type=MessageType.SYSTEM,
-                content="❌ Location not found. Please provide your location first.",
+                content="[ERROR] Location not found. Please provide your location first.",
                 timestamp=datetime.now()
             )
         
@@ -410,7 +410,7 @@ class ProfessionalEmergencyCoordinator:
             return ChatResponse(
                 message_id=str(uuid.uuid4()),
                 type=MessageType.SYSTEM,
-                content="❌ Invalid hospital selection. Please choose a valid hospital number.",
+                content="[ERROR] Invalid hospital selection. Please choose a valid hospital number.",
                 timestamp=datetime.now()
             )
         
@@ -438,7 +438,7 @@ class ProfessionalEmergencyCoordinator:
         """Format dispatch confirmation response"""
         response_parts = []
         
-        response_parts.append("✅ **AMBULANCE DISPATCHED & HOSPITAL NOTIFIED**")
+        response_parts.append("[OK] **AMBULANCE DISPATCHED & HOSPITAL NOTIFIED**")
         response_parts.append("")
         
         response_parts.append("🚑 **AMBULANCE DETAILS:**")

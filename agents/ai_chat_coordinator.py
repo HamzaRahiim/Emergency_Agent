@@ -56,7 +56,7 @@ class AIChatCoordinator:
             return ChatResponse(
                 message_id=str(uuid.uuid4()),
                 type=MessageType.SYSTEM,
-                content=f"❌ **AI Service Error**: {str(e)}\n\nPlease check your GEMINI_API_KEY configuration and try again.",
+                content=f"[ERROR] **AI Service Error**: {str(e)}\n\nPlease check your GEMINI_API_KEY configuration and try again.",
                 needs_confirmation=False,
                 timestamp=datetime.now()
             )
@@ -80,7 +80,7 @@ class AIChatCoordinator:
                 return ChatResponse(
                     message_id=str(uuid.uuid4()),
                     type=MessageType.SYSTEM,
-                    content=f"❌ **AI Service Error**: {str(e)}\n\nPlease check your GEMINI_API_KEY configuration and try again.",
+                    content=f"[ERROR] **AI Service Error**: {str(e)}\n\nPlease check your GEMINI_API_KEY configuration and try again.",
                     needs_confirmation=False,
                     timestamp=datetime.now()
                 )
@@ -250,7 +250,7 @@ class AIChatCoordinator:
             return ChatResponse(
                 message_id=str(uuid.uuid4()),
                 type=MessageType.SYSTEM,
-                content="❌ Location not found. Please provide your location first.",
+                content="[ERROR] Location not found. Please provide your location first.",
                 timestamp=datetime.now()
             )
         
@@ -261,7 +261,7 @@ class AIChatCoordinator:
             return ChatResponse(
                 message_id=str(uuid.uuid4()),
                 type=MessageType.SYSTEM,
-                content="❌ No hospitals found in your area. Please try a different location.",
+                content="[ERROR] No hospitals found in your area. Please try a different location.",
                 timestamp=datetime.now()
             )
         
@@ -300,7 +300,7 @@ class AIChatCoordinator:
             return ChatResponse(
                 message_id=str(uuid.uuid4()),
                 type=MessageType.SYSTEM,
-                content="❌ Location not found. Please provide your location first.",
+                content="[ERROR] Location not found. Please provide your location first.",
                 timestamp=datetime.now()
             )
         
@@ -311,14 +311,14 @@ class AIChatCoordinator:
             return ChatResponse(
                 message_id=str(uuid.uuid4()),
                 type=MessageType.SYSTEM,
-                content="❌ Invalid hospital selection. Please choose a valid hospital number.",
+                content="[ERROR] Invalid hospital selection. Please choose a valid hospital number.",
                 timestamp=datetime.now()
             )
         
         selected_hospital = hospitals[hospital_number - 1]
         
         # Generate dispatch confirmation
-        dispatch_message = f"""✅ **AMBULANCE DISPATCHED & HOSPITAL NOTIFIED**
+        dispatch_message = f"""[OK] **AMBULANCE DISPATCHED & HOSPITAL NOTIFIED**
 
 🚑 **AMBULANCE DETAILS:**
 • **Driver Contact:** Will contact you at {phone_number}
