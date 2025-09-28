@@ -51,12 +51,12 @@ multi_agent_coordinator = MultiAgentCoordinator()
 @app.get("/")
 async def read_root():
     """API root endpoint - Frontend is served separately"""
-    return {"message": "Emergency Agent System API", "status": "running", "frontend": "React app running on port 3000"}
+    return {"status": "ok", "message": "Emergency Agent System API", "timestamp": datetime.now().isoformat()}
 
 @app.get("/status")
 async def status_check():
     """Simple status endpoint for Railway health checks"""
-    return {"status": "ok", "message": "Emergency Agent System is running"}
+    return {"status": "ok", "message": "Emergency Agent System is running", "timestamp": datetime.now().isoformat()}
 
 @app.get("/health")
 async def health_check():
